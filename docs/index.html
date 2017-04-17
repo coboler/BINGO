@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>ビンゴ</title>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>
+window.SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
+var recognition = new webkitSpeechRecognition();
+recognition.lang = 'ja';
+var numbers = [];
+var u = new SpeechSynthesisUtterance();
+u.lang = 'en-US';
+u.rate = 1.2;
+
+
+// 録音終了時トリガー
+recognition.addEventListener('result', function(event){
+    var text = event.results.item(0).item(0).transcript;
+    if(text === "スタート"){
+        document.getElementById("result").innerHTML = text;
+            $("#result_text").val(text);
+    }
+    else{
+        document.getElementById("result").innerHTML = text;
+            $("#result_text").val(text);
+    }
+}, false);
+
+function init(){
+    var i = 1;
+    u.text = i;
+    speechSynthesis.speak(u);
+    
+    for(var i = 1; i <= 100; i ++ ){
+        numbers[i] = i;
+        console.log(numbers[i]);
+    }
+}
+
+// 録音開始
+function record()
+{
+    recognition.start();
+}
+
+// 録音開始
+function stop()
+{
+    recognition.stop();
+}
+
+</script>
+</head>
+
+<body>
+<textarea id="result_text" cols="100" rows="10">
+</textarea>
+    <div id="result">結果はここ</div>
+<br />
+<input type="button" onClick="init()" value="初期化" />
+<input type="button" onClick="record()" value="録音開始" />
+<input type="button" onClick="stop()" value="録音停止" />
+</body>
+</html>
