@@ -18,6 +18,7 @@ var u = new SpeechSynthesisUtterance();
 u.lang = 'en-US';
 u.rate = 1.2;
 
+
 // 録音終了時トリガー
 recognition.addEventListener('result', function(event){
     var text = event.results.item(0).item(0).transcript;
