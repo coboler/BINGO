@@ -17,54 +17,78 @@ var numbers = [];
 var u = new SpeechSynthesisUtterance();
 u.lang = 'en-US';
 u.rate = 1.2;
-
+var MAX_NUM = 100;
 
 // 録音終了時トリガー
 recognition.addEventListener('result', function(event){
     var text = event.results.item(0).item(0).transcript;
+    
     if(text === "スタート"){
-        document.getElementById("result").innerHTML = text;
-            $("#result_text").val(text);
-    }
-    else{
-        document.getElementById("result").innerHTML = text;
-            $("#result_text").val(text);
+        choseNum();
+    }else{
+        speechSynthesis.speak("You should say start");
     }
 }, false);
 
-function init(){
-    var i = 1;
-    u.text = i;
-    speechSynthesis.speak(u);
-    
+
+
+
+
+function init(){    
     for(var i = 1; i <= 100; i ++ ){
         numbers[i] = i;
-        console.log(numbers[i]);
     }
+    document.getElementById("initbtn").style.display = "none";
 }
 
 // 録音開始
 function record()
 {
     recognition.start();
-}
-
-// 録音開始
-function stop()
-{
     recognition.stop();
 }
 
+function choseNum(){
+    new SpeechSynthesisUtterance("No Programming, No Life");
+    var rnd = Math.floor(Math.random() * numbers.length) + 1;
+    var num = numbers[rnd];
+    document.getElementById("result").innerHTML = num;
+    numbers.splice(rnd,1);
+    u.text = num;
+    speechSynthesis.speak(u);
+}
+
 </script>
+<style>
+  body {
+    font-family:Meiryo;
+  }
+  .display1{
+      font-size: 400px; 
+      width:700px;
+      margin-right: auto;
+      margin-left : auto;
+  }
+  .btn{
+    width:200px;
+    font-size:24px;
+    font-weight:bold;
+    text-decoration:none;
+    padding:8px 0 10px;
+    color:#333;
+    border:1px solid #333;
+  }
+</style>
+
 </head>
 
 <body>
-<textarea id="result_text" cols="100" rows="10">
-</textarea>
-    <div id="result">結果はここ</div>
+    <div id="result" class="display1">-</div>
 <br />
-<input type="button" onClick="init()" value="初期化" />
-<input type="button" onClick="record()" value="録音開始" />
-<input type="button" onClick="stop()" value="録音停止" />
+<input id="initbtn" type="button" onClick="init()" value="初期化" class="btn" />
+<input id="recordbtn" type="button" onClick="record()" value="録音開始" class="btn"/>
+<input id="chosebtn" type="button" onClick="choseNum()" value="録音なし抽選" class="btn"/>
+<input id="chosebtn" type="button" onClick="choseNum()" value="景品の抽選" class="btn"/>
+<div id="result" class="display2">なにがでるかな？</div>
 </body>
 </html>
