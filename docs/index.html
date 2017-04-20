@@ -13,11 +13,10 @@ and open the template in the editor.
 window.SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
 var recognition = new webkitSpeechRecognition();
 recognition.lang = 'ja';
-var numbers = [];
+var items = [];
 var u = new SpeechSynthesisUtterance();
-u.lang = 'en-US';
+u.lang = 'ja';
 u.rate = 1.2;
-var MAX_NUM = 100;
 
 // 録音終了時トリガー
 recognition.addEventListener('result', function(event){
@@ -30,15 +29,16 @@ recognition.addEventListener('result', function(event){
     }
 }, false);
 
+function addItem(){    
+    var text = document.getElementById("itemname").value;
+    items[items.length] = text;
+    $('#itemtable').after("<tr id=\""+ text + "\"><td class=\"row\">" + text +"</td></tr>");
+}
 
-
-
-
-function init(){    
-    for(var i = 1; i <= 100; i ++ ){
-        numbers[i] = i;
-    }
-    document.getElementById("initbtn").style.display = "none";
+function endInit(){
+        document.getElementById("addbtn").style.display = "none";
+        document.getElementById("initendbtn").style.display = "none";
+        document.getElementById("itemname").style.display = "none";
 }
 
 // 録音開始
@@ -48,15 +48,39 @@ function record()
     recognition.stop();
 }
 
-function choseNum(){
-    new SpeechSynthesisUtterance("No Programming, No Life");
-    var rnd = Math.floor(Math.random() * numbers.length) + 1;
-    var num = numbers[rnd];
-    document.getElementById("result").innerHTML = num;
-    numbers.splice(rnd,1);
-    u.text = num;
+function choseItem(){
+    $("#chosebtn").prop("disabled",true);
+    var rnd = Math.floor(Math.random() * items.length);
+    var item = items[rnd];
+    document.getElementById("result").innerHTML = item;
+    items.splice(rnd,1);
+    u.text = "おめでとうございます!商品は" + item + "です!!";
     speechSynthesis.speak(u);
+    
+    u.text = "残り商品は" + items.length + "個です";
+    speechSynthesis.speak(u);
+    document.getElementById(item).style.color = "#DC143C";
+    
+    Sleep(3);
+    
+    $("#chosebtn").prop("disabled",false);
 }
+
+function sample(){
+        u.text = "おめでとうございます! 商品はネットコボルフォアドットネットです";
+        speechSynthesis.speak(u);
+        document.getElementById("samplebtn").style.display = "none";
+}
+
+function Sleep( T ){ 
+   var d1 = new Date().getTime(); 
+   var d2 = new Date().getTime(); 
+   while( d2 < d1+1000*T ){    //T秒待つ 
+       d2=new Date().getTime(); 
+   } 
+   return; 
+} 
+Sleep( 1 );//1秒待つ 
 
 </script>
 <style>
@@ -64,10 +88,7 @@ function choseNum(){
     font-family:Meiryo;
   }
   .display1{
-      font-size: 400px; 
-      width:700px;
-      margin-right: auto;
-      margin-left : auto;
+      font-size: 300px; 
   }
   .btn{
     width:200px;
@@ -78,6 +99,18 @@ function choseNum(){
     color:#333;
     border:1px solid #333;
   }
+  .row{
+      width:200px;
+      font-size:24px;
+  }
+  
+  table {
+	border-collapse: collapse;
+}
+td {
+	border: solid 1px;
+	padding: 0.5em;
+}
 </style>
 
 </head>
@@ -85,10 +118,14 @@ function choseNum(){
 <body>
     <div id="result" class="display1">-</div>
 <br />
-<input id="initbtn" type="button" onClick="init()" value="初期化" class="btn" />
-<input id="recordbtn" type="button" onClick="record()" value="録音開始" class="btn"/>
-<input id="chosebtn" type="button" onClick="choseNum()" value="録音なし抽選" class="btn"/>
-<input id="chosebtn" type="button" onClick="choseNum()" value="景品の抽選" class="btn"/>
-<div id="result" class="display2">なにがでるかな？</div>
+<input id="itemname" type="input"  value="" class="btn" />
+<input id="addbtn" type="button" onClick="addItem()" value="追加" class="btn" />
+<input id= "initendbtn" type="button" onClick="endInit()" value="追加修了" class="btn" />
+<input id="chosebtn" type="button" onClick="choseItem()" value="景品の抽選" class="btn"/>
+<input id= "samplebtn" type="button" onClick="sample()" value="サンプル" class="btn" />
+<div id="result" class="display2">
+    <table id="itemtable">
+    </table>
+</div>
 </body>
 </html>
